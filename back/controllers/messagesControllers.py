@@ -40,7 +40,7 @@ def get_conversations():
         return jsonify({'message': 'Service Internal Server Error', "error": str(e)}), 500
 
 @jwt_required()
-def del_stories(id):
+def del_message(id):
     try:
         user_id, user_role = get_jwt_identity()
         status_code, message = del_stories(id, user_id)

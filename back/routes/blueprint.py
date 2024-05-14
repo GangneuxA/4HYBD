@@ -11,18 +11,15 @@ from controllers.usersControllers import (
 )
 
 from controllers.messagesControllers import (
-    get_job_by_user, 
-    index_job, 
-    create_job,
-    delete_job,
-    download_file
+    send_message, 
+    get_messages, 
+    get_conversations,
+    del_message,
 )
 from controllers.storiesControllers import (
-    get_job_by_user, 
-    index_job, 
-    create_job,
-    delete_job,
-    download_file
+    create_story, 
+    get_stories, 
+    del_stories
 )
 
 
@@ -42,12 +39,12 @@ blueprint.route('/login', methods=['POST'])(login)
 blueprint.route('/logout', methods=['POST'])(logout)
 
 #crud message
-blueprint.route('/conversation', methods=['GET'])(get_job_by_user)
-blueprint.route('/message', methods=['GET'])(index_job)
-blueprint.route('/message', methods=['POST'])(create_job)
-blueprint.route('/message', methods=['DELETE'])(delete)
+blueprint.route('/conversation', methods=['GET'])(get_conversations)
+blueprint.route('/message', methods=['GET'])(get_messages)
+blueprint.route('/message', methods=['POST'])(send_message)
+blueprint.route('/message', methods=['DELETE'])(del_message)
 
 #crud stories
-blueprint.route('/stories', methods=['GET'])(get_job_by_user)
-blueprint.route('/stories', methods=['POST'])(index_job)
-blueprint.route('/stories', methods=['DELETE'])(delete)
+blueprint.route('/stories', methods=['GET'])(get_stories)
+blueprint.route('/stories', methods=['POST'])(create_story)
+blueprint.route('/stories', methods=['DELETE'])(del_stories)
