@@ -10,14 +10,16 @@ from services.user_service import (
     login_service,
     get_user_by_id_service,
 )
-from back.services.message_service import (create_db_logic)
+from services.message_service import (create_logic_message)
+from services.stories_service import (create_logic_stories)
 
 def create():
     try:
         response_user, status_code_user = create_logic()
-        response_job, status_code_job = create_db_logic()
-        if status_code_job == 200 and status_code_user == 200:
-            return jsonify({"user": response_user, "job": response_job}), 200
+        response_message, status_code_message = create_logic_message()
+        response_stories, status_code_stories = create_logic_stories()
+        if status_code_stories == 200 and status_code_user == 200 and status_code_message == 200:
+            return jsonify({"user": response_user, "message": response_message, "stories": response_stories}), 200
         else:
             raise Exception("Error tables creation")
     except Exception as e:
@@ -40,8 +42,6 @@ def index():
     try:
         user_id, user_role = get_jwt_identity()
         print(user_id,user_role)
-        if user_role != "admin":
-            return jsonify({"message": "You are not authorized to access this resource."}), 403
         response, status_code = index_logic()
         return response, status_code
     except Exception as e:

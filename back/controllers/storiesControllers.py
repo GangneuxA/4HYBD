@@ -1,18 +1,23 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from services.stories_service import(
-    create_story,
-    get_stories,
-    del_stories
+    create_story_srv,
+    get_stories_srv,
+    del_stories_srv
 )
 from flask import request, jsonify
 
 @jwt_required()
 def create_story():
     try:
+        if 'image' not in request.files:
+            return jsonify({'error': 'No image provided'}), 404
         user_id, user_role = get_jwt_identity()
-        data = request.get_json()
-        new_story = create_story(user_id, data)
-        return new_story , 201
+        data = {
+           "location": request.form['location'],
+           "image": request.files['image'].read()
+        }
+        message, status_code = create_story_srv(user_id, data)
+        return message, status_code
     except Exception as e:
         print(e)
         return jsonify({'message': 'Service Internal Server Error', "error": str(e)}), 500
@@ -20,18 +25,18 @@ def create_story():
 @jwt_required()
 def get_stories():
     try:
-        stories = get_stories()
-        return stories , 200
+        message, status_code = get_stories_srv()
+        return message, status_code
     except Exception as e:
         print(e)
-        return jsonify({'message': 'Service Internal Server Error', "error": str(e)}), 500
+        return jsonify({'message': ' Internal Server Error', "error": str(e)}), 500
 
 
 @jwt_required()
 def del_stories(id):
     try:
         user_id, user_role = get_jwt_identity()
-        status_code, message = del_stories(id, user_id)
+        message, status_code = del_stories_srv(id, user_id)
         return message, status_code
     except Exception as e:
         print(e)

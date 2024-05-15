@@ -1,9 +1,9 @@
 from flask import request, jsonify
 from services.message_service import(
-    send_message,
-    get_messages,
-    get_conversations,
-    del_stories
+    send_message_srv,
+    get_messages_srv,
+    get_conversations_srv,
+    del_stories_srv
 )
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -11,20 +11,26 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 def send_message():
     try:
         user_id, user_role = get_jwt_identity()
-        data = request.get_json()
-        new_message = send_message(user_id, data)
-        return new_message , 201
+        data = {
+           "receiver": request.form['receiver'],
+        }
+        if 'image' in request.files:
+            data["image"]= request.files['image'].read()
+        if 'message' in request.form:
+            data["message"]= request.form['message']
+
+        message, status_code  = send_message_srv(user_id, data)
+        return message, status_code 
     except Exception as e:
         print(e)
         return jsonify({'message': 'Service Internal Server Error', "error": str(e)}), 500
     
 @jwt_required()
-def get_messages():
+def get_messages(id):
     try:
         user_id, user_role = get_jwt_identity()
-        data = request.get_json()
-        received_messages = get_messages(user_id, data)
-        return received_messages , 200
+        message, status_code  = get_messages_srv(user_id, id)
+        return  message, status_code 
     except Exception as e:
         print(e)
         return jsonify({'message': 'Service Internal Server Error', "error": str(e)}), 500
@@ -33,8 +39,8 @@ def get_messages():
 def get_conversations():
     try:
         user_id, user_role = get_jwt_identity()
-        conversations = get_conversations(user_id)
-        return conversations , 200
+        message, status_code  = get_conversations_srv(user_id)
+        return  message, status_code
     except Exception as e:
         print(e)
         return jsonify({'message': 'Service Internal Server Error', "error": str(e)}), 500
@@ -43,8 +49,8 @@ def get_conversations():
 def del_message(id):
     try:
         user_id, user_role = get_jwt_identity()
-        status_code, message = del_stories(id, user_id)
-        return message, status_code
+        message, status_code = del_stories_srv(id, user_id)
+        return  message, status_code 
     except Exception as e:
         print(e)
         return jsonify({'message': 'Service Internal Server Error', "error": str(e)}), 500

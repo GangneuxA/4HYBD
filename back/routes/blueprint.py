@@ -40,11 +40,11 @@ blueprint.route('/logout', methods=['POST'])(logout)
 
 #crud message
 blueprint.route('/conversation', methods=['GET'])(get_conversations)
-blueprint.route('/message', methods=['GET'])(get_messages)
+blueprint.route('/message/<int:id>', methods=['GET'])(get_messages)
 blueprint.route('/message', methods=['POST'])(send_message)
-blueprint.route('/message', methods=['DELETE'])(del_message)
+blueprint.route('/message/<int:id>', methods=['DELETE'])(del_message)
 
 #crud stories
 blueprint.route('/stories', methods=['GET'])(get_stories)
 blueprint.route('/stories', methods=['POST'])(create_story)
-blueprint.route('/stories', methods=['DELETE'])(del_stories)
+blueprint.route('/stories/<int:id>', methods=['DELETE'])(del_stories)

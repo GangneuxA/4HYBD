@@ -14,7 +14,6 @@ services:
       FLASK_RUN_PORT: "5001"
       APP_SUPER_KEY: "youtube"
       SQLALCHEMY_DATABASE_URI: "mysql+pymysql://app_user:password@mysql:3306/app_db"
-      K8S_URI: "http://192.168.0.129:8080"
     volumes:
       - ./data/logs:/app/logs/
     links:
