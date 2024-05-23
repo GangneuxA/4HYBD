@@ -40,7 +40,7 @@ const Login: React.FC = () => {
             });
 
             console.log( await Preferences.get({ key:'token' }))
-            // router.push('/home', 'root')
+            router.push('/app', 'forward')
         } catch (error) {
             console.error('Error during login:', error)
         }

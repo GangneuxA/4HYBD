@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { IonApp, IonIcon, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
 /* Core CSS required for Ionic components to work properly */
@@ -33,6 +33,10 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './theme/variables.css';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Messages from './pages/Messages';
+import Profile from './pages/Profile';
+import { triangle } from 'ionicons/icons';
+import Tabs from './pages/Tabs';
 
 setupIonicReact();
 
@@ -44,6 +48,7 @@ const App: React.FC = () => (
           <Login />
         </Route>
         <Route component={Register} path="/register" exact />
+        <Route component={Tabs} path="/app" />
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

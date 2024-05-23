@@ -24,11 +24,15 @@ class Messages(db.Model):
         return '<id %r>' % self.id
     
     def to_json(self):
-        return {
+        bodyJson = {
             'id': self.id,
             'sender_id': self.sender_id,
             'receiver_id': self.receiver_id,
-            'image': base64.b64encode(self.image).decode('utf-8'),
             'timestamp': self.timestamp,
             'message': self.message
         }
+        if self.image != None:
+            bodyJson['image'] = base64.b64encode(self.image).decode('utf-8')
+        else:
+            bodyJson['image'] = None
+        return bodyJson
