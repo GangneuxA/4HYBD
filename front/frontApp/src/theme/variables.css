@@ -1,2 +1,6 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+ion-img::part(image) {
+    width: 30%; 
+    height: 30%;
+  }

@@ -18,8 +18,11 @@ def send_message():
             data["image"]= request.files['image'].read()
         if 'message' in request.form:
             data["message"]= request.form['message']
-
+        print(data)
         message, status_code  = send_message_srv(user_id, data)
+        print("##############################################", flush=True)
+        print(message, status_code, flush=True)
+        print("##############################################", flush=True)
         return message, status_code 
     except Exception as e:
         print(e)

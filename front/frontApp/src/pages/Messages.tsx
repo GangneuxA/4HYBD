@@ -1,9 +1,10 @@
-import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonRefresher, IonRefresherContent, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonIcon, IonImg, IonInput, IonItem, IonLabel, IonList, IonModal, IonPage, IonRefresher, IonRefresherContent, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useEffect, useRef, useState } from 'react';
 import Logout from "./Logout"
 import { Preferences } from '@capacitor/preferences';
 import { global } from "../Global";
 import { sendOutline, trashBin, trashBinOutline } from 'ionicons/icons';
+import { Camera, CameraResultType } from '@capacitor/camera';
 
 const Messages: React.FC = () => {
 
@@ -14,8 +15,20 @@ const Messages: React.FC = () => {
     const modal = useRef<HTMLIonModalElement>(null)
     let [results, setResults] = useState<any[]>([]);
     const [message, setMessage] = useState('')
+    const [image, setImage] = useState<any>(null)
 
     const formData = new FormData();
+
+    const takePicture = async () => {
+        const pic = await Camera.getPhoto({
+            quality: 90,
+            allowEditing: false,
+            resultType: CameraResultType.Base64,
+        })
+
+        // const img = `data:image/jpeg;base64,${pic.base64String}`
+        setImage(pic.base64String)
+    }
 
     const GetAllUsers = async () => {
         try {
@@ -107,12 +120,24 @@ const Messages: React.FC = () => {
 
     const sendmessage = async () => {
         try {
-            formData.append('receiver', selectedUser?.id)
-            formData.append('message', message)
+
+            const byteCharacters = atob(image);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'image/jpeg' });
+
+            formData.append('receiver', selectedUser.id);
+            formData.append('message', message);
+            formData.append('image', image);
+
             const { value: token } = await Preferences.get({ key: 'token' });
             const response = await fetch(`${global.URL_BACK}message`, {
                 method: 'POST',
                 headers: {
+                    'accept': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
                 body: formData
@@ -132,6 +157,15 @@ const Messages: React.FC = () => {
         const query = (ev.target as HTMLIonSearchbarElement).value?.toLowerCase() || ''
         setResults(users.filter(user => user.pseudo.toLowerCase().includes(query)))
     };
+
+    const ImageDecoder = ( imageBase64: string ) => {
+      
+        const img = `data:image/jpeg;base64,${imageBase64}`
+      
+        return (
+            <img src={img} alt="Image décoder" />
+        );
+      };
 
 
 
@@ -201,6 +235,9 @@ const Messages: React.FC = () => {
                                 <IonItem lines="none">
                                     <IonLabel>
                                         {conv.message}
+                                        {conv.image != null && (
+                                            ImageDecoder(conv.image)
+                                        )}
                                         {conv.sender_id === selectedUser?.id && (
                                                 <p>Sent by {selectedUser?.pseudo}</p>
                                         )}
@@ -228,7 +265,10 @@ const Messages: React.FC = () => {
                                         value={message}
                                         onIonChange={(e: any) => setMessage(e.detail.value)}
                                     />
-                                    <IonButton type="submit" className='ion-margin-top'>
+                                    <IonButton expand='full' onClick={takePicture}>Take Picture</IonButton>
+                                    {image && <IonImg src={image} className="fixed-size-img" alt="Photo"/>}
+                                    
+                                    <IonButton expand='full' type="submit" className='ion-margin-top'>
                                         <IonIcon slot='icon-only' icon={sendOutline}></IonIcon>
                                     </IonButton>
                                 </form>

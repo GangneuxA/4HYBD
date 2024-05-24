@@ -14,13 +14,15 @@ const Profile: React.FC = () => {
     const [updatepassword, setUpdatePassword] = useState('');
     const [updatepseudo, setUpdatePseudo] = useState('');
     const [updateemail, setUpdateEmail] = useState('');
-    const [loading, setLoading] = useState(false);
     const [showToast, setShowToast] = useState({ show: false, message: '', color: 'success' });
     const [editing, setEditing] = useState(false); 
 
+    function sleep(ms: any) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
     const fetchUserData = async () => {
-        setLoading(true);
+        
         try {
             const { value: token } = await Preferences.get({ key: 'token' });
             const response = await fetch(`${global.URL_BACK}getme`, {
@@ -33,9 +35,9 @@ const Profile: React.FC = () => {
             const data = await response.json();
             setPseudo(data['pseudo']);
             setEmail(data['email']);
-            setLoading(false);
+            
         } catch (error) {
-            setLoading(false);
+            
             setShowToast({ show: true, message: 'Failed to fetch user data', color: 'danger' });
         }
     };
@@ -50,8 +52,13 @@ const Profile: React.FC = () => {
             return;
         }
 
-        setLoading(true);
+        
+        await sleep(2000)
         try {
+
+            console.log('Update Pseudo:', updatepseudo);
+            console.log('Update Email:', updateemail);
+            console.log('Update Password:', updatepassword);
             const { value: token } = await Preferences.get({ key: 'token' });
             const response = await fetch(`${global.URL_BACK}users`, {
                 method: 'PUT',
@@ -60,22 +67,22 @@ const Profile: React.FC = () => {
                     'accept': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ email: updateemail || email, pseudo: updatepseudo || pseudo, password: updatepassword }),
+                body: JSON.stringify({ email: updateemail , pseudo: updatepseudo , password: updatepassword }),
             });
 
-            setLoading(false);
+            
             setEditing(false);
             setShowToast({ show: true, message: 'Profile updated successfully', color: 'success' });
 
-            fetchUserData();
+            await fetchUserData();
         } catch (error) {
-            setLoading(false);
+            
             setShowToast({ show: true, message: 'Failed to update profile', color: 'danger' });
         }
     };
 
     const handleDeleteUser = async () => {
-        setLoading(true);
+        
         try {
             const { value: token } = await Preferences.get({ key: 'token' });
             await fetch(`${global.URL_BACK}users`, {
@@ -86,17 +93,22 @@ const Profile: React.FC = () => {
                     'Authorization': `Bearer ${token}`
                 },
             });
-            setLoading(false);
+            
             setShowToast({ show: true, message: 'Profile deleted successfully', color: 'success' });
             setPseudo('');
             setEmail('');
             await Preferences.remove({ key: 'token'})
             router.push('/', 'forward')
         } catch (error) {
-            setLoading(false);
+            
             setShowToast({ show: true, message: 'Failed to delete profile', color: 'danger' });
         }
     };
+
+    const doRefresh = async (event:any) => {
+        await fetchUserData()
+        event.detail.complete()
+    }
 
     return (
         <IonPage>
@@ -107,10 +119,12 @@ const Profile: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
-                {loading && <IonLoading isOpen={loading} message={'Please wait...'} />}
+                <IonRefresher slot='fixed' onIonRefresh={doRefresh}>
+                    <IonRefresherContent/>
+                </IonRefresher>
                 <IonGrid className="ion-text-center">
                     <IonRow>
-                        <IonCol size='4' offset='4'>
+                        <IonCol size='7' offset='5'>
                             <IonImg src={image} alt="Profile Image" />
                         </IonCol>
                     </IonRow>
@@ -132,12 +146,12 @@ const Profile: React.FC = () => {
                         <IonRow>
                             <IonCol size="4">
                                 <IonItem>
-                                    <IonInput labelPlacement="floating" label='Pseudo' placeholder={pseudo} onIonChange={e => setUpdatePseudo(e.detail.value!)} />
+                                    <IonInput labelPlacement="floating" label='Pseudo' type='text' placeholder={pseudo} onIonChange={e => setUpdatePseudo(e.detail.value!)} />
                                 </IonItem>
                             </IonCol>
                             <IonCol size="4">
                                 <IonItem>
-                                    <IonInput labelPlacement="floating" label='Email' placeholder={email} onIonChange={e => setUpdateEmail(e.detail.value!)} />
+                                    <IonInput labelPlacement="floating" label='Email' type="email" placeholder={email} onIonChange={e => setUpdateEmail(e.detail.value!)} />
                                 </IonItem>
                             </IonCol>
                             <IonCol size="4">

@@ -31,6 +31,9 @@ def get_me():
     try:
         user_id, user_role = get_jwt_identity()
         response, status_code = get_user_by_id_service(user_id)
+        print("##############################################", flush=True)
+        print(response, status_code, flush=True)
+        print("##############################################", flush=True)
         return jsonify(response), status_code
 
     except Exception as e:
@@ -63,6 +66,9 @@ def update():
         user_id, user_role = get_jwt_identity()
         user_data = request.get_json()
         response, status_code = update_logic(user_id, user_data)
+        print("##############################################", flush=True)
+        print(user_data, status_code, flush=True)
+        print("##############################################", flush=True)
         return response, status_code
     except Exception as e:
         print(e)

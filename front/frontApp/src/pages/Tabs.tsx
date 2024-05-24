@@ -15,7 +15,6 @@ const Tabs: React.FC = () => {
                 <Route path='/app/messages' component={Messages} />
                 <Route path='/app/profile' component={Profile} />
                 <Route path='/app/storie' component={Storie} />
-                <Route path='/app/photo' component={Photo} />
                 <Route exact path='/app'>
                     <Redirect to='/app/messages'/>
                 </Route>
@@ -33,10 +32,6 @@ const Tabs: React.FC = () => {
                 <IonTabButton tab='storie' href='/app/storie'>
                     <IonIcon icon={atCircleOutline}/>
                     <IonLabel>Storie</IonLabel>
-                </IonTabButton>
-                <IonTabButton tab='photo' href='/app/photo'>
-                    <IonIcon icon={phonePortrait}/>
-                    <IonLabel>Photo</IonLabel>
                 </IonTabButton>
             </IonTabBar>
         </IonTabs>
