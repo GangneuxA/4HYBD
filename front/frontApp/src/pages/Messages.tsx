@@ -5,6 +5,7 @@ import { Preferences } from '@capacitor/preferences';
 import { global } from "../Global";
 import { sendOutline, trashBin, trashBinOutline } from 'ionicons/icons';
 import { Camera, CameraResultType } from '@capacitor/camera';
+import Pica from 'pica'
 
 const Messages: React.FC = () => {
 
@@ -20,15 +21,39 @@ const Messages: React.FC = () => {
     const formData = new FormData();
 
     const takePicture = async () => {
-        const pic = await Camera.getPhoto({
-            quality: 90,
-            allowEditing: false,
-            resultType: CameraResultType.Base64,
-        })
+        try {
+            const pic = await Camera.getPhoto({
+                quality: 90,
+                allowEditing: false,
+                resultType: CameraResultType.Uri,
+            });
 
-        // const img = `data:image/jpeg;base64,${pic.base64String}`
-        setImage(pic.base64String)
-    }
+            const response = await fetch(pic.webPath!);
+            const originalBlob = await response.blob();
+
+            const img = new Image();
+            img.src = URL.createObjectURL(originalBlob);
+            
+            img.onload = async () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 500;
+                const scaleSize = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH;
+                canvas.height = img.height * scaleSize;
+
+                const pica = Pica();
+                const resizedCanvas = await pica.resize(img, canvas, {
+                    quality: 3,
+                });
+
+                const resizedBlob = await pica.toBlob(resizedCanvas, 'image/jpeg', 0.90);
+                setImage(resizedBlob);
+            };
+        } catch (error) {
+            console.error('Error taking picture:', error);
+        }
+    };
+    
 
     const GetAllUsers = async () => {
         try {
@@ -121,18 +146,11 @@ const Messages: React.FC = () => {
     const sendmessage = async () => {
         try {
 
-            const byteCharacters = atob(image);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: 'image/jpeg' });
-
             formData.append('receiver', selectedUser.id);
             formData.append('message', message);
-            formData.append('image', image);
-
+            if (image) {
+                formData.append('image', image, 'photo.jpg');
+            }
             const { value: token } = await Preferences.get({ key: 'token' });
             const response = await fetch(`${global.URL_BACK}message`, {
                 method: 'POST',
@@ -142,6 +160,7 @@ const Messages: React.FC = () => {
                 },
                 body: formData
             });
+            console.log(response)
 
             if (!response.ok) {
                 throw new Error('Network response was not ok')
@@ -166,8 +185,6 @@ const Messages: React.FC = () => {
             <img src={img} alt="Image décoder" />
         );
       };
-
-
 
     useEffect(() => {
         GetAllUsers()
@@ -266,6 +283,7 @@ const Messages: React.FC = () => {
                                         onIonChange={(e: any) => setMessage(e.detail.value)}
                                     />
                                     <IonButton expand='full' onClick={takePicture}>Take Picture</IonButton>
+                                    
                                     {image && <IonImg src={image} className="fixed-size-img" alt="Photo"/>}
                                     
                                     <IonButton expand='full' type="submit" className='ion-margin-top'>

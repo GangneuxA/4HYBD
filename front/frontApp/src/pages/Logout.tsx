@@ -10,6 +10,7 @@ const Logout: React.FC = () => {
 
     const Logout = async () => {
             await Preferences.remove({ key: 'token'})
+            await Preferences.remove({ key: 'id'})
             router.push('/', 'forward')
     }
 

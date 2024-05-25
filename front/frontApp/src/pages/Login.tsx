@@ -33,13 +33,20 @@ const Login: React.FC = () => {
 
             const data = await response.json();
             const token = data.access_token;
+            const id = data.id
 
             await Preferences.set({
                 key: 'token',
                 value: token,
             });
 
+            await Preferences.set({
+                key: 'id',
+                value: id,
+            });
+
             console.log( await Preferences.get({ key:'token' }))
+            console.log( await Preferences.get({ key:'id' }))
             router.push('/app', 'forward')
         } catch (error) {
             console.error('Error during login:', error)

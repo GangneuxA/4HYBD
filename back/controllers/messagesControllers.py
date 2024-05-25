@@ -16,6 +16,7 @@ def send_message():
         }
         if 'image' in request.files:
             data["image"]= request.files['image'].read()
+            print(data['image'], flush=True)
         if 'message' in request.form:
             data["message"]= request.form['message']
         print(data)
