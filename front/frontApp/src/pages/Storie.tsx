@@ -118,6 +118,7 @@ const Storie: React.FC = () => {
             if (image) {
                 formData.append('image', image , 'photo.jpg');
             }
+            
             const { value: token } = await Preferences.get({ key: 'token' });
             const response = await fetch(`${global.URL_BACK}stories`, {
                 method: 'POST',
