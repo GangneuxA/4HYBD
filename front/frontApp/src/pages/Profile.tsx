@@ -17,10 +17,6 @@ const Profile: React.FC = () => {
     const [showToast, setShowToast] = useState({ show: false, message: '', color: 'success' });
     const [editing, setEditing] = useState(false); 
 
-    function sleep(ms: any) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     const fetchUserData = async () => {
         
         try {
@@ -52,8 +48,6 @@ const Profile: React.FC = () => {
             return;
         }
 
-        
-        await sleep(2000)
         try {
 
             console.log('Update Pseudo:', updatepseudo);

@@ -21,6 +21,10 @@ def create_story_srv(id, data):
         user = Users.query.get(id)
         if not user :
             return {"error": "user not found"}, 404
+        
+        print('OOOOOOOOOOOOOOOOOOO', flush=True)
+        print(data, flush=True)
+        print('OOOOOOOOOOOOOOOOOOO', flush=True)
 
         new_story = Stories(
             user_id=user.id,

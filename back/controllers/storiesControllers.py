@@ -11,12 +11,16 @@ def create_story():
     try:
         if 'image' not in request.files:
             return jsonify({'error': 'No image provided'}), 404
+        
         user_id, user_role = get_jwt_identity()
         data = {
            "location": request.form['location'],
            "image": request.files['image'].read()
         }
         message, status_code = create_story_srv(user_id, data)
+        print("##############################################", flush=True)
+        print(message, status_code, flush=True)
+        print("##############################################", flush=True)
         return message, status_code
     except Exception as e:
         print(e)

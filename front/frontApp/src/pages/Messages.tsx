@@ -17,6 +17,7 @@ const Messages: React.FC = () => {
     let [results, setResults] = useState<any[]>([]);
     const [message, setMessage] = useState('')
     const [image, setImage] = useState<any>(null)
+    const [imagetmp, setImageTmp] = useState<any>(null)
 
     const formData = new FormData();
 
@@ -25,30 +26,45 @@ const Messages: React.FC = () => {
             const pic = await Camera.getPhoto({
                 quality: 90,
                 allowEditing: false,
-                resultType: CameraResultType.Uri,
+                resultType: CameraResultType.Base64,
             });
 
-            const response = await fetch(pic.webPath!);
-            const originalBlob = await response.blob();
-
-            const img = new Image();
-            img.src = URL.createObjectURL(originalBlob);
-            
-            img.onload = async () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 500;
-                const scaleSize = MAX_WIDTH / img.width;
-                canvas.width = MAX_WIDTH;
-                canvas.height = img.height * scaleSize;
-
-                const pica = Pica();
-                const resizedCanvas = await pica.resize(img, canvas, {
-                    quality: 3,
-                });
-
-                const resizedBlob = await pica.toBlob(resizedCanvas, 'image/jpeg', 0.90);
-                setImage(resizedBlob);
-            };
+            if (pic.base64String) {
+                
+                const imgtmp = `data:image/jpeg;base64,${pic.base64String}`;
+                setImageTmp(imgtmp);
+        
+                
+                const byteString = atob(pic.base64String);
+                const mimeString = 'image/jpeg';
+                const ab = new ArrayBuffer(byteString.length);
+                const ia = new Uint8Array(ab);
+                for (let i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                const originalBlob = new Blob([ab], { type: mimeString });
+        
+                const img = new Image();
+                img.src = URL.createObjectURL(originalBlob);
+        
+                img.onload = async () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 500;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = img.height * scaleSize;
+        
+                    const pica = Pica();
+                    const resizedCanvas = await pica.resize(img, canvas, {
+                        quality: 3,
+                    });
+        
+                    const resizedBlob = await pica.toBlob(resizedCanvas, 'image/jpeg', 0.90);
+                    setImage(resizedBlob);
+                };
+            } else {
+                console.error('Base64 string is undefined');
+            }
         } catch (error) {
             console.error('Error taking picture:', error);
         }
@@ -284,7 +300,7 @@ const Messages: React.FC = () => {
                                     />
                                     <IonButton expand='full' onClick={takePicture}>Take Picture</IonButton>
                                     
-                                    {image && <IonImg src={image} className="fixed-size-img" alt="Photo"/>}
+                                    {imagetmp && <IonImg src={imagetmp} className="fixed-size-img" alt="Photo"/>}
                                     
                                     <IonButton expand='full' type="submit" className='ion-margin-top'>
                                         <IonIcon slot='icon-only' icon={sendOutline}></IonIcon>

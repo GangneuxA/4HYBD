@@ -22,7 +22,7 @@ def send_message_srv(user_id,data):
         receiver = Users.query.get(data["receiver"])
         if not sender or not receiver:
             return {"error": "user not found"}, 404
-
+        
         new_message = Messages(
             sender_id=sender.id,
             receiver_id=receiver.id,
