@@ -1,5 +1,7 @@
 # React ionic
 
+Realized by Alexis GANGNEUX and Julien BOISGARD
+
 The back follow this models.
 ![Alt text](/images/models.png "follow this model")
 
