@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonRefresher, IonRefresherContent, IonRow, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonCard, IonCardContent, IonCol, IonContent, IonHeader, IonIcon, IonImg, IonItem, IonLabel, IonPage, IonRefresher, IonRefresherContent, IonRow, IonTitle, IonToast, IonToolbar } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import Logout from "./Logout"
 import { Preferences } from '@capacitor/preferences';
@@ -17,6 +17,7 @@ const Storie: React.FC = () => {
     const [imagetmp, setImageTmp] = useState<any>(null)
     const [userLocation, setUserLocation] = useState<{ lat: number, lon: number } | null>(null);
     const [conv, setConv] = useState<any[]>([])
+    const [showToast, setShowToast] = useState({ show: false, message: '', color: 'success' });
 
     console.log(Preferences.get({ key: 'id'}))
 
@@ -227,6 +228,7 @@ const Storie: React.FC = () => {
     const sendFriends = async () => {
         for (const friendid of conv ) {
             await sendmessage(friendid)
+            setShowToast({ show: true, message: 'message send with success', color: 'success' });
         }
     };
 
@@ -308,6 +310,13 @@ const Storie: React.FC = () => {
                         ))}
                     </IonCardContent>
                 </IonCard>
+                <IonToast
+                    isOpen={showToast.show}
+                    message={showToast.message}
+                    color={showToast.color}
+                    duration={2000}
+                    onDidDismiss={() => setShowToast({ show: false, message: '', color: 'success' })}
+                />
             </IonContent>
         </IonPage>
     );

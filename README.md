@@ -16,3 +16,31 @@ to initialize the database go to the link: http://localhost:5001/
 the docs of back is in swagger on http://localhost:5001/api/docs
 
 # lauch front
+
+
+before the lauch go to /front/frontApp/src/Global.tsx and just put your BackUrl.
+
+for launch front on website do : 
+
+```
+cd /front/frontApp 
+
+npm install
+
+ionic build 
+
+ionic serve 
+```
+
+For launch on android mobile do :
+
+```
+cd /front/frontApp 
+
+npm install
+
+ionic cap sync android
+
+ionic cap open android 
+
+```

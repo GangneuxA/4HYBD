@@ -24,6 +24,7 @@ const Login: React.FC = () => {
 
             console.log(email)
             console.log(password)
+            
             const response = await fetch(`${global.URL_BACK}login`, {
                 method: 'POST',
                 headers: HEADERS,
