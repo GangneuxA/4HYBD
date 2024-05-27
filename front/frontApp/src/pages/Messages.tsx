@@ -19,8 +19,6 @@ const Messages: React.FC = () => {
     const [image, setImage] = useState<any>(null)
     const [imagetmp, setImageTmp] = useState<any>(null)
 
-    const formData = new FormData();
-
     const takePicture = async () => {
         try {
             const pic = await Camera.getPhoto({
@@ -162,6 +160,8 @@ const Messages: React.FC = () => {
     const sendmessage = async () => {
         try {
 
+            const formData = new FormData();
+
             formData.append('receiver', selectedUser.id);
             formData.append('message', message);
             if (image) {
@@ -177,6 +177,7 @@ const Messages: React.FC = () => {
                 body: formData
             });
             console.log(response)
+            setImage(null)
 
             if (!response.ok) {
                 throw new Error('Network response was not ok')
@@ -289,7 +290,6 @@ const Messages: React.FC = () => {
                         )}
                         <IonCard>
                             <IonCardContent>
-                                <form onSubmit={sendmessage}>
                                     <IonInput
                                         fill="outline"
                                         labelPlacement="floating"
@@ -302,10 +302,9 @@ const Messages: React.FC = () => {
                                     
                                     {imagetmp && <IonImg src={imagetmp} className="fixed-size-img" alt="Photo"/>}
                                     
-                                    <IonButton expand='full' type="submit" className='ion-margin-top'>
+                                    <IonButton expand='full' onClick={sendmessage} className='ion-margin-top'>
                                         <IonIcon slot='icon-only' icon={sendOutline}></IonIcon>
                                     </IonButton>
-                                </form>
                             </IonCardContent>
                         </IonCard>
                     </IonContent>

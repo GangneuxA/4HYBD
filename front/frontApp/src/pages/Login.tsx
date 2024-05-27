@@ -63,7 +63,6 @@ const Login: React.FC = () => {
             <IonContent>
                 <IonCard>
                     <IonCardContent>
-                        <form onSubmit={doLogin}>
                             <IonInput
                                 fill="outline"
                                 labelPlacement="floating"
@@ -83,7 +82,7 @@ const Login: React.FC = () => {
                                 value={password}
                                 onIonChange={(e: any) => setPassword(e.detail.value)}
                             />
-                            <IonButton type="submit" expand='block' className='ion-margin-top'>
+                            <IonButton onClick={doLogin} expand='block' className='ion-margin-top'>
                                 Login
                                 <IonIcon icon={logInOutline} slot='end'></IonIcon>
                             </IonButton>
@@ -91,7 +90,6 @@ const Login: React.FC = () => {
                                 Register
                                 <IonIcon icon={atOutline} slot='end'></IonIcon>
                             </IonButton>
-                        </form>
                     </IonCardContent>
                 </IonCard>
             </IonContent>

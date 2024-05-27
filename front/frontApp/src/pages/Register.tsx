@@ -49,7 +49,6 @@ const Register: React.FC = () => {
             <IonContent>
                 <IonCard>
                     <IonCardContent>
-                        <form onSubmit={doRegister}>
                             <IonInput 
                                 fill="outline" 
                                 labelPlacement="floating" 
@@ -79,11 +78,10 @@ const Register: React.FC = () => {
                                 value={password}
                                 onIonChange={(e: any) => setPassword(e.detail.value)}
                             />
-                            <IonButton color={'primary'} type='submit' expand='block' className='ion-margin-top'>
+                            <IonButton color={'primary'} onClick={doRegister} expand='block' className='ion-margin-top'>
                                 Register
                                 <IonIcon icon={checkboxOutline} slot='end'></IonIcon>
                             </IonButton>
-                        </form>
                     </IonCardContent>
                 </IonCard>
             </IonContent>
