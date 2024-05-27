@@ -32,7 +32,8 @@
     "react-dom": "^18.2.0",
     "react-image-file-resizer": "^0.4.8",
     "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^5.3.4",
+    "react-usestateref": "^1.0.9"
   },
   "devDependencies": {
     "@capacitor/cli": "6.0.0",

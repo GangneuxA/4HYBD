@@ -22,7 +22,6 @@ const Storie: React.FC = () => {
 
     const printCurrentPosition = async () => {
         const coordinates = await Geolocation.getCurrentPosition();
-        console.log(coordinates.coords.latitude)
         const latitude = coordinates.coords.latitude
         const longitude = coordinates.coords.longitude
         setGeo(`Lat:${latitude}:Lon:${longitude}`)
@@ -96,11 +95,9 @@ const Storie: React.FC = () => {
             }
 
             const data = await response.json();
-            console.log(data)
             setStories(data)
             const { value: id } = await Preferences.get({ key: 'id' })
             setID(id)
-            console.log(id)
             
         } catch (error) {
             console.error('Error during fetch:', error)
@@ -110,6 +107,8 @@ const Storie: React.FC = () => {
     const sendStorie = async () => {
         try {
 
+            console.log(image)
+
             const formData = new FormData();
 
             if(geo) {
@@ -118,6 +117,8 @@ const Storie: React.FC = () => {
             if (image) {
                 formData.append('image', image , 'photo.jpg');
             }
+
+            console.log(formData.get('image'))
             
             const { value: token } = await Preferences.get({ key: 'token' });
             const response = await fetch(`${global.URL_BACK}stories`, {
@@ -162,10 +163,6 @@ const Storie: React.FC = () => {
     };
 
     const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-        console.log(lat1)
-        console.log(lon1)
-        console.log(lat2)
-        console.log(lon2)
         const R = 6371; 
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;

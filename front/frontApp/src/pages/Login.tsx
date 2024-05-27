@@ -13,18 +13,21 @@ const Login: React.FC = () => {
 
     const router = useIonRouter();
 
-    const[email, setEmail] = useState('');
-    const[password, setPassword] = useState('');
+    const[email, setEmail] = useState<any>(null);
+    const[password, setPassword] = useState<any>(null);
 
-    const doLogin = async (event: any) => {
-        
-        event.preventDefault()
+    const doLogin = async (event: React.FormEvent) => {
+
+        event.preventDefault();
         
         try {
+
+            console.log(email)
+            console.log(password)
             const response = await fetch(`${global.URL_BACK}login`, {
                 method: 'POST',
                 headers: HEADERS,
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email: email, password: password }),
             });
 
             if (!response.ok) {
@@ -34,6 +37,8 @@ const Login: React.FC = () => {
             const data = await response.json();
             const token = data.access_token;
             const id = data.id
+
+            console.log(id)
 
             await Preferences.set({
                 key: 'token',
@@ -63,6 +68,7 @@ const Login: React.FC = () => {
             <IonContent>
                 <IonCard>
                     <IonCardContent>
+                            <form onSubmit={doLogin}>
                             <IonInput
                                 fill="outline"
                                 labelPlacement="floating"
@@ -70,7 +76,7 @@ const Login: React.FC = () => {
                                 type='email'
                                 placeholder='example@example.fr'
                                 value={email}
-                                onIonChange={(e: any) => setEmail(e.detail.value)}
+                                onIonChange={(e: any) => setEmail(e.detail.value!)}
                             />
                             <IonInput
                                 className='ion-margin-top'
@@ -80,12 +86,13 @@ const Login: React.FC = () => {
                                 type='password'
                                 placeholder='password'
                                 value={password}
-                                onIonChange={(e: any) => setPassword(e.detail.value)}
+                                onIonChange={(e: any) => setPassword(e.detail.value!)}
                             />
-                            <IonButton onClick={doLogin} expand='block' className='ion-margin-top'>
+                            <IonButton type='submit' expand='block' className='ion-margin-top'>
                                 Login
                                 <IonIcon icon={logInOutline} slot='end'></IonIcon>
                             </IonButton>
+                            </form>
                             <IonButton routerLink='register' color={'secondary'} type='button' expand='block' className='ion-margin-top'>
                                 Register
                                 <IonIcon icon={atOutline} slot='end'></IonIcon>

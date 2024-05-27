@@ -22,10 +22,8 @@ def create_story_srv(id, data):
         if not user :
             return {"error": "user not found"}, 404
         
-        print('OOOOOOOOOOOOOOOOOOO', flush=True)
-        print(data, flush=True)
-        print('OOOOOOOOOOOOOOOOOOO', flush=True)
-
+        print(data['image'], flush=True)
+        
         new_story = Stories(
             user_id=user.id,
             image=data['image'],

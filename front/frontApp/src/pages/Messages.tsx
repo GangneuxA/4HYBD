@@ -177,7 +177,9 @@ const Messages: React.FC = () => {
                 body: formData
             });
             console.log(response)
-            setImage(null)
+            setImageTmp(null)
+            setSelectedUser(null)
+            GetAllConv()
 
             if (!response.ok) {
                 throw new Error('Network response was not ok')
