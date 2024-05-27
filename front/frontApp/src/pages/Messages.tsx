@@ -180,6 +180,7 @@ const Messages: React.FC = () => {
             setImageTmp(null)
             setSelectedUser(null)
             GetAllConv()
+            setMessage('')
 
             if (!response.ok) {
                 throw new Error('Network response was not ok')
